@@ -10,10 +10,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import xyz.ruanxy.java.balance.config.AppConstants;
 import xyz.ruanxy.java.balance.exception.BadRequestException;
+import xyz.ruanxy.java.balance.model.User;
 import xyz.ruanxy.java.balance.model.Wallet;
+import xyz.ruanxy.java.balance.payload.PagedResponse;
 import xyz.ruanxy.java.balance.payload.WalletDto;
+import xyz.ruanxy.java.balance.repository.UserRepository;
 import xyz.ruanxy.java.balance.repository.WalletRepository;
 import xyz.ruanxy.java.balance.security.UserPrincipal;
+
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class WalletService {
@@ -22,13 +28,36 @@ public class WalletService {
     @Autowired
     private WalletRepository walletRepository;
 
-    public Page<Wallet> getAllWallets(UserPrincipal userPrincipal, int page, int size){
+    @Autowired
+    private UserRepository userRepository;
+
+    public PagedResponse<WalletDto> getAllWallets(UserPrincipal userPrincipal, int page, int size){
         validatePageNumberAndSize(page, size);
 
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
-        Page<Wallet> wallets = walletRepository.findByUserId(userPrincipal.getId(), pageable);
+        Page<Wallet> wallets = walletRepository.findAll(pageable);
 
-        return wallets;
+        logger.info("UserId {}, wallets.getNumberOfElements() {}", userPrincipal.getId(), wallets.getNumberOfElements());
+
+        if (wallets.getNumberOfElements() == 0) {
+            return new PagedResponse<>(Collections.emptyList(),
+                    wallets.getNumber(), wallets.getSize(), wallets.getTotalElements(),
+                    wallets.getTotalPages(), wallets.isLast());
+        }
+
+        List<WalletDto> walletResponses = wallets.map(wallet -> {
+            WalletDto dto = new WalletDto();
+            dto.setId(wallet.getId());
+            dto.setName(wallet.getName());
+            dto.setAlias(wallet.getAlias());
+            dto.setComment(wallet.getComment());
+            dto.setType(wallet.getType());
+            dto.setCreationDateTime(wallet.getCreatedAt());
+            return dto;
+        }).getContent();
+
+        return new PagedResponse<>(walletResponses, wallets.getNumber(), wallets.getSize(),
+                wallets.getTotalElements(), wallets.getTotalPages(), wallets.isLast());
     }
 
     private void validatePageNumberAndSize(int page, int size) {
@@ -41,14 +70,18 @@ public class WalletService {
         }
     }
 
-    public WalletDto create(WalletDto dto){
+    public WalletDto create(UserPrincipal userPrincipal, WalletDto dto){
         Wallet model = new Wallet();
         model.setName(dto.getName());
         model.setAlias(dto.getAlias());
         model.setType(dto.getType());
         model.setComment(dto.getComment());
 
-        Wallet saved = walletRepository.save(model);
+        User user = userRepository.getOne(userPrincipal.getId());
+
+        model.setUser(user);
+
+        walletRepository.save(model);
         dto.setId(model.getId());
         return dto;
     }
