@@ -1,25 +1,27 @@
 package xyz.ruanxy.java.balance.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import xyz.ruanxy.java.balance.config.AppConstants;
 import xyz.ruanxy.java.balance.exception.BadRequestException;
+import xyz.ruanxy.java.balance.exception.ResourceNotFoundException;
 import xyz.ruanxy.java.balance.model.User;
 import xyz.ruanxy.java.balance.model.Wallet;
+import xyz.ruanxy.java.balance.model.WalletType;
 import xyz.ruanxy.java.balance.payload.PagedResponse;
 import xyz.ruanxy.java.balance.payload.WalletDto;
 import xyz.ruanxy.java.balance.repository.UserRepository;
 import xyz.ruanxy.java.balance.repository.WalletRepository;
 import xyz.ruanxy.java.balance.security.UserPrincipal;
+import xyz.ruanxy.java.balance.util.ModelMapper;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class WalletService {
@@ -31,11 +33,19 @@ public class WalletService {
     @Autowired
     private UserRepository userRepository;
 
-    public PagedResponse<WalletDto> getAllWallets(UserPrincipal userPrincipal, int page, int size){
+    public PagedResponse<WalletDto> getAllWallets(UserPrincipal userPrincipal, String type, int page, int size){
         validatePageNumberAndSize(page, size);
 
+        User user = userRepository.getOne(userPrincipal.getId());
+
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
-        Page<Wallet> wallets = walletRepository.findAll(pageable);
+
+        Wallet example = new Wallet();
+        example.setType(WalletType.valueOf(type));
+        example.setUser(user);
+
+        Example<Wallet> e = Example.of(example);
+        Page<Wallet> wallets = walletRepository.findAll(e, pageable);
 
         logger.info("UserId {}, wallets.getNumberOfElements() {}", userPrincipal.getId(), wallets.getNumberOfElements());
 
@@ -46,12 +56,8 @@ public class WalletService {
         }
 
         List<WalletDto> walletResponses = wallets.map(wallet -> {
-            WalletDto dto = new WalletDto();
+            WalletDto dto = ModelMapper.unmarshal(wallet);
             dto.setId(wallet.getId());
-            dto.setName(wallet.getName());
-            dto.setAlias(wallet.getAlias());
-            dto.setComment(wallet.getComment());
-            dto.setType(wallet.getType());
             dto.setCreationDateTime(wallet.getCreatedAt());
             return dto;
         }).getContent();
@@ -71,11 +77,7 @@ public class WalletService {
     }
 
     public WalletDto create(UserPrincipal userPrincipal, WalletDto dto){
-        Wallet model = new Wallet();
-        model.setName(dto.getName());
-        model.setAlias(dto.getAlias());
-        model.setType(dto.getType());
-        model.setComment(dto.getComment());
+        Wallet model = ModelMapper.marshal(dto);
 
         User user = userRepository.getOne(userPrincipal.getId());
 
@@ -84,5 +86,70 @@ public class WalletService {
         walletRepository.save(model);
         dto.setId(model.getId());
         return dto;
+    }
+
+    public WalletDto get(UserPrincipal userPrincipal, String walletName){
+        User user = userRepository.getOne(userPrincipal.getId());
+
+        Wallet wallet = new Wallet();
+        wallet.setName(walletName);
+        wallet.setUser(user);
+
+        Example<Wallet> example = Example.of(wallet);
+
+        Optional<Wallet> optional = walletRepository.findOne(example);
+
+        Wallet w = optional.orElseThrow(() -> new ResourceNotFoundException("wallet", "name", walletName));
+
+        WalletDto dto = ModelMapper.unmarshal(w);
+        dto.setId(w.getId());
+
+        return dto;
+    }
+
+    public Optional<Wallet> getOptional(UserPrincipal userPrincipal, String walletName){
+        User user = userRepository.getOne(userPrincipal.getId());
+
+        Wallet wallet = new Wallet();
+        wallet.setName(walletName);
+        wallet.setUser(user);
+
+        Example<Wallet> example = Example.of(wallet);
+
+        Optional<Wallet> optional = walletRepository.findOne(example);
+
+        return optional;
+    }
+
+    public Optional<Wallet> getOptional(UserPrincipal userPrincipal, Long id){
+        User user = userRepository.getOne(userPrincipal.getId());
+
+        Wallet wallet = new Wallet();
+        wallet.setId(id);
+        wallet.setUser(user);
+
+        Example<Wallet> example = Example.of(wallet);
+
+        Optional<Wallet> optional = walletRepository.findOne(example);
+
+        return optional;
+    }
+
+    public void delete(UserPrincipal userPrincipal, String walletName) {
+        Optional<Wallet> optional = this.getOptional(userPrincipal, walletName);
+
+        Wallet w = optional.orElseThrow(() -> new ResourceNotFoundException("wallet", "name", walletName));
+
+        walletRepository.delete(w);
+    }
+
+    public void update(UserPrincipal userPrincipal, Long id, WalletDto dto){
+        Optional<Wallet> optional = this.getOptional(userPrincipal, id);
+        Wallet wallet = optional.orElseThrow(() -> new ResourceNotFoundException("wallet", "id", id));
+        Wallet w = ModelMapper.marshal(dto);
+        w.setId(wallet.getId());
+        w.setUser(wallet.getUser());
+        w.setCreatedAt(wallet.getCreatedAt());
+        walletRepository.save(w);
     }
 }

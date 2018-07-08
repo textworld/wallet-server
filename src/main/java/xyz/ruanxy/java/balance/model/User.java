@@ -48,11 +48,6 @@ public class User extends DateAudit {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    @OneToOne(fetch = FetchType.LAZY,
-            cascade =  CascadeType.ALL,
-            mappedBy = "user")
-    private WxUser wxUser;
-
     public User() {
 
     }
@@ -112,11 +107,4 @@ public class User extends DateAudit {
         this.roles = roles;
     }
 
-    public WxUser getWxUser() {
-        return wxUser;
-    }
-
-    public void setWxUser(WxUser wxUser) {
-        this.wxUser = wxUser;
-    }
 }

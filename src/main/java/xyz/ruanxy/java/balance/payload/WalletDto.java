@@ -10,6 +10,7 @@ public class WalletDto {
     private String alias;
     private String comment;
     private WalletType Type;
+    private Double balance;
     private Instant creationDateTime;
     private Instant expirationDateTime;
 
@@ -69,6 +70,14 @@ public class WalletDto {
         Type = type;
     }
 
+    public Double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(Double balance) {
+        this.balance = balance;
+    }
+
     @Override
     public String toString() {
         return "WalletDto{" +
@@ -77,6 +86,7 @@ public class WalletDto {
                 ", alias='" + alias + '\'' +
                 ", comment='" + comment + '\'' +
                 ", Type=" + Type +
+                ", balance=" + balance +
                 ", creationDateTime=" + creationDateTime +
                 ", expirationDateTime=" + expirationDateTime +
                 '}';

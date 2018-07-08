@@ -31,6 +31,8 @@ public class Wallet extends DateAudit {
     @Size(max = 128)
     private String comment;
 
+    private Double balance;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -94,5 +96,13 @@ public class Wallet extends DateAudit {
 
     public void setHistories(List<WalletHistory> histories) {
         this.histories = histories;
+    }
+
+    public Double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(Double balance) {
+        this.balance = balance;
     }
 }
