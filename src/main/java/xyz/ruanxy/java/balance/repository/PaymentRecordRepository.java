@@ -7,4 +7,5 @@ import xyz.ruanxy.java.balance.model.PaymentRecord;
 @Repository
 public interface PaymentRecordRepository extends JpaRepository<PaymentRecord, Long> {
     boolean existsByOrderId(String orderId);
+    PaymentRecord findByOrderId(String orderId);
 }

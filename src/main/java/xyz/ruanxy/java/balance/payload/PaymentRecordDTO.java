@@ -12,6 +12,8 @@ public class PaymentRecordDTO {
     private String tradeStatus;
     private String name;
     private Integer status;
+    private String tradeAccount;
+    private String fundStatus;
 
     public Long getId() {
         return id;
@@ -83,5 +85,21 @@ public class PaymentRecordDTO {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getTradeAccount() {
+        return tradeAccount;
+    }
+
+    public void setTradeAccount(String tradeAccount) {
+        this.tradeAccount = tradeAccount;
+    }
+
+    public String getFundStatus() {
+        return fundStatus;
+    }
+
+    public void setFundStatus(String fundStatus) {
+        this.fundStatus = fundStatus;
     }
 }

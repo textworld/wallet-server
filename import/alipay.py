@@ -5,7 +5,7 @@ import json
 class Recorder:
 
     def __init__(self):
-        self.domain = "http://192.168.2.8:5000"
+        self.domain = "http://localhost:5000"
         self.header = {'Content-Type': 'application/json'}
 
     def alipay(self, data_map):
@@ -30,6 +30,8 @@ class Recorder:
             "name": data_map["商品名称"],
             "trade_status": data_map["交易状态"],
             "status": 0,
+            "trade_account": data_map["交易对方"],
+            "fund_status": data_map["资金状态"],
         }
         json_str = json.dumps(json_map)
         response = requests.post(self.domain.strip("/") + "/api/v1/record", data=json_str, headers=self.header)
