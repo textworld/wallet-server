@@ -17,7 +17,7 @@ public class PaymentRecord{
     private Double money;
     private LocalDateTime date;
     private String source;
-    private int status;
+    private Integer status;
     @Column( unique=true)
     private String orderId;
     private Short tradeType;
@@ -56,11 +56,11 @@ public class PaymentRecord{
         this.source = source;
     }
 
-    public int getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
