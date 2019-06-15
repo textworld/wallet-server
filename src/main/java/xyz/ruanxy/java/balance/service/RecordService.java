@@ -22,7 +22,7 @@ import xyz.ruanxy.java.balance.repository.PaymentRecordRepository;
 @Service
 public class RecordService {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(RecordService.class);
+    private static Logger logger = LoggerFactory.getLogger(RecordService.class);
 
     @Autowired
     PaymentRecordRepository recordRepository;
@@ -48,11 +48,16 @@ public class RecordService {
 
     @Transactional
     public void save(PaymentRecordDTO dto) {
+        logger.info("save paymentrecord1");
+
         if (dto.getOrderId() == null) {
             throw new IllegalArgumentException("Order Id must be provided");
         }
 
+        logger.info("save paymentrecord2");
+
         if (!recordRepository.existsByOrderId(dto.getOrderId())){
+            logger.info("save paymentrecord3");
             PaymentRecord model = new PaymentRecord();
             BeanUtils.copyProperties(dto, model);
 
@@ -62,6 +67,7 @@ public class RecordService {
             paymentRecord.setFundStatus(dto.getFundStatus());
             paymentRecord.setTradeAccount(dto.getTradeAccount());
             recordRepository.save(paymentRecord);
+            logger.info("Id: {}, FundStatus: {}", paymentRecord.getId(), paymentRecord.getFundStatus());
         }
     }
 

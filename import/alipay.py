@@ -5,7 +5,7 @@ import json
 class Recorder:
 
     def __init__(self):
-        self.domain = "http://localhost:5000"
+        self.domain = "http://192.168.2.8:5000"
         self.header = {'Content-Type': 'application/json'}
 
     def alipay(self, data_map):
