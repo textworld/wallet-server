@@ -7,6 +7,4 @@ import xyz.ruanxy.java.balance.model.TransactionModel;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<TransactionModel, Long> {
-    @Query(value = "select * from T_Transaction order by id desc")
-    public TransactionModel getLastTransaction();
 }
