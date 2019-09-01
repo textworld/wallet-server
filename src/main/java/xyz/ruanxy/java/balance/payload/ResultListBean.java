@@ -5,7 +5,7 @@ import java.util.Collection;
 public class ResultListBean<T> {
     private int code;
     private String message;
-    private Collection<T> data;
+    private Collection<T> result;
 
     public int getCode() {
         return code;
@@ -23,12 +23,12 @@ public class ResultListBean<T> {
         this.message = message;
     }
 
-    public Collection<T> getData() {
-        return data;
+    public Collection<T> getResult() {
+        return result;
     }
 
-    public void setData(Collection<T> data) {
-        this.data = data;
+    public void setResult(Collection<T> result) {
+        this.result = result;
     }
 
     public static ResultListBean error(int code, String message) {
@@ -49,7 +49,7 @@ public class ResultListBean<T> {
         ResultListBean resultListBean = new ResultListBean();
         resultListBean.setCode(0);
         resultListBean.setMessage("success");
-        resultListBean.setData(data);
+        resultListBean.setResult(data);
         return resultListBean;
     }
 }

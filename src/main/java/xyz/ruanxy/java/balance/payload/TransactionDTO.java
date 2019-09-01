@@ -1,10 +1,14 @@
 package xyz.ruanxy.java.balance.payload;
 
+import java.time.LocalDateTime;
+import xyz.ruanxy.java.balance.model.typeeunm.TransactionStatus;
+
 public class TransactionDTO {
     private long id;
-    private String status;
+    private TransactionStatus status;
     private double asset;
     private double debt;
+    private LocalDateTime gmtTransaction;
 
     public long getId() {
         return id;
@@ -14,11 +18,11 @@ public class TransactionDTO {
         this.id = id;
     }
 
-    public String getStatus() {
+    public TransactionStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(TransactionStatus status) {
         this.status = status;
     }
 
@@ -36,5 +40,13 @@ public class TransactionDTO {
 
     public void setDebt(double debt) {
         this.debt = debt;
+    }
+
+    public LocalDateTime getGmtTransaction() {
+        return gmtTransaction;
+    }
+
+    public void setGmtTransaction(LocalDateTime gmtTransaction) {
+        this.gmtTransaction = gmtTransaction;
     }
 }

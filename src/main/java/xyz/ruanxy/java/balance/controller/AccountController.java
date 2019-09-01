@@ -5,11 +5,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import xyz.ruanxy.java.balance.payload.AccountDTO;
+import xyz.ruanxy.java.balance.payload.AccountRecordDTO;
 import xyz.ruanxy.java.balance.payload.ResultBean;
+import xyz.ruanxy.java.balance.payload.ResultListBean;
+import xyz.ruanxy.java.balance.service.AccountRecordService;
 import xyz.ruanxy.java.balance.service.AccountService;
 
 @RestController
-@RequestMapping(value = "/wallet")
+@RequestMapping(value = "/api/v1/account")
 @CrossOrigin
 public class AccountController {
 
@@ -17,6 +20,8 @@ public class AccountController {
 
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private AccountRecordService accountRecordService;
 
     @PostMapping
     public ResultBean<AccountDTO> create(@RequestBody AccountDTO dto) {
@@ -35,4 +40,15 @@ public class AccountController {
         return ResultBean.success("删除成功");
     }
 
+    @GetMapping(value = "/{id:\\d+}/record")
+    public ResultListBean<AccountRecordDTO> getRecords(
+        @PathVariable(name = "id") long accountId
+    ){
+        return ResultListBean.success(accountRecordService.getByAccount(accountId));
+    }
+
+    @GetMapping()
+    public ResultListBean<AccountDTO> getAll(){
+        return ResultListBean.success(accountService.getAll());
+    }
 }

@@ -1,5 +1,6 @@
 package xyz.ruanxy.java.balance.model;
 
+import java.time.LocalDateTime;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,10 +14,11 @@ public class TransactionModel extends GmtAudit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String status;
+    private int status;
     private double asset;
     private double debt;
     private long pre;
+    private LocalDateTime gmtTransaction;
 
     public Long getId() {
         return id;
@@ -26,12 +28,20 @@ public class TransactionModel extends GmtAudit {
         this.id = id;
     }
 
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
+    }
+
+    public LocalDateTime getGmtTransaction() {
+        return gmtTransaction;
+    }
+
+    public void setGmtTransaction(LocalDateTime gmtTransaction) {
+        this.gmtTransaction = gmtTransaction;
     }
 
     public double getAsset() {

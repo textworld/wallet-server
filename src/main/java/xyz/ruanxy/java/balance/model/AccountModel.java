@@ -1,5 +1,6 @@
 package xyz.ruanxy.java.balance.model;
 
+import javax.validation.constraints.Digits;
 import org.hibernate.annotations.NaturalId;
 import xyz.ruanxy.java.balance.model.audit.DateAudit;
 
@@ -20,15 +21,15 @@ public class AccountModel extends GmtAudit {
     private Long id;
 
     @NotBlank
-    @NaturalId
     @Size(max = 128)
     private String name;
 
-    private int type;
+    private int type = WalletType.ASSET.getValue();
 
-    @Size(max = 128)
+    @Size(max = 10000)
     private String comment;
 
+    private int active = 1;
 
     public Long getId() {
         return id;
@@ -62,4 +63,11 @@ public class AccountModel extends GmtAudit {
         this.comment = comment;
     }
 
+    public int getActive() {
+        return active;
+    }
+
+    public void setActive(int active) {
+        this.active = active;
+    }
 }

@@ -1,18 +1,20 @@
-package xyz.ruanxy.java.balance.model;
+package xyz.ruanxy.java.balance.model.typeeunm;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum WalletType {
-    DEBT(1, "debt"),
-    ASSET(2, "asset");
+
+public enum TransactionStatus {
+    BEGIN(1, "begin"),
+    COMMIT(2, "commit");
+
 
     @JsonValue
     private String type;
     private int value;
 
-    private WalletType(int value, String type)
+    private TransactionStatus(int value, String type)
     {
         this.value = value;
         this.type = type;
@@ -37,8 +39,8 @@ public enum WalletType {
     }
 
 
-    public static WalletType parse(String type) {
-        for (WalletType t : WalletType.values()) {
+    public static TransactionStatus parse(String type) {
+        for (TransactionStatus t : TransactionStatus.values()) {
             if (t.getType().equalsIgnoreCase(type)) {
                 return t;
             }
@@ -46,8 +48,8 @@ public enum WalletType {
         throw new IllegalArgumentException("no wallet type found for " + type);
     }
 
-    public static WalletType parse(int value){
-        for (WalletType t : WalletType.values()) {
+    public static TransactionStatus parse(int value){
+        for (TransactionStatus t : TransactionStatus.values()) {
             if(t.getValue() == value) {
                 return t;
             }

@@ -2,6 +2,7 @@ package xyz.ruanxy.java.balance.model.audit;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import org.springframework.data.annotation.CreatedDate;
@@ -16,23 +17,23 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 )
 public class GmtAudit {
     @CreatedDate
-    private Instant gmtCreate;
+    private LocalDateTime gmtCreate;
     @LastModifiedDate
-    private Instant gmtModify;
+    private LocalDateTime gmtModify;
 
-    public Instant getGmtCreate() {
+    public LocalDateTime getGmtCreate() {
         return gmtCreate;
     }
 
-    public void setGmtCreate(Instant gmtCreate) {
+    public void setGmtCreate(LocalDateTime gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 
-    public Instant getGmtModify() {
+    public LocalDateTime getGmtModify() {
         return gmtModify;
     }
 
-    public void setGmtModify(Instant gmtModify) {
+    public void setGmtModify(LocalDateTime gmtModify) {
         this.gmtModify = gmtModify;
     }
 }

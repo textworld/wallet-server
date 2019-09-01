@@ -13,7 +13,7 @@ public class CustomBeanUtils {
     }
 
     public static void copyNotNullProperties(Object source, Object target) {
-        BeanUtils.copyProperties(source, target, getNotNullPropertyNames(source));
+        BeanUtils.copyProperties(source, target, getNullPropertyNames(source));
     }
 
     public static String[] getNullPropertyNames(Object source) {

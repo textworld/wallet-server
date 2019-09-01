@@ -3,7 +3,7 @@ package xyz.ruanxy.java.balance.payload;
 public class ResultBean<T> {
     private int code;
     private String message;
-    private T data;
+    private T result;
 
     public int getCode() {
         return code;
@@ -21,12 +21,12 @@ public class ResultBean<T> {
         this.message = message;
     }
 
-    public T getData() {
-        return data;
+    public T getResult() {
+        return result;
     }
 
-    public void setData(T data) {
-        this.data = data;
+    public void setResult(T result) {
+        this.result = result;
     }
 
     public static ResultBean error(int code, String message) {
@@ -54,7 +54,7 @@ public class ResultBean<T> {
             ResultBean resultBean = new ResultBean();
             resultBean.setCode(0);
             resultBean.setMessage("success");
-            resultBean.setData(data);
+            resultBean.setResult(data);
             return resultBean;
     }
 }
