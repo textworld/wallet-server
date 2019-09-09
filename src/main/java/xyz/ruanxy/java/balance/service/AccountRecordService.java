@@ -17,6 +17,8 @@ import xyz.ruanxy.java.balance.model.AccountRecordModel;
 import xyz.ruanxy.java.balance.model.TransactionModel;
 import xyz.ruanxy.java.balance.model.typeeunm.TransactionStatus;
 import xyz.ruanxy.java.balance.payload.AccountRecordDTO;
+import xyz.ruanxy.java.balance.payload.vo.AccountRecordVO;
+import xyz.ruanxy.java.balance.payload.vo.TransactionVO;
 import xyz.ruanxy.java.balance.repository.AccountRecordRepository;
 import xyz.ruanxy.java.balance.repository.TransactionRepository;
 import xyz.ruanxy.java.balance.repository.WalletRepository;
@@ -64,6 +66,20 @@ public class AccountRecordService {
 
         CustomBeanUtils.copyNotNullProperties(dto, model);
 
+        Optional<AccountModel> accountModel = walletRepo.findById(dto.getAccountId());
+        Optional<TransactionModel> transactionModel = transactionRepo.findById(dto.getTransactionId());
+
+        model.setTransaction(transactionModel.get());
+        model.setAccount(accountModel.get());
+        model.setGmtTransaction(transactionModel.get().getGmtTransaction());
+
+        AccountRecordModel accountRecordModel = accountRecordRepo.findByAccountAndTransaction(accountModel.get(), transactionModel.get());
+
+        if (accountRecordModel != null) {
+            CustomBeanUtils.copyNotNullProperties(model, accountRecordModel);
+            model = accountRecordModel;
+        }
+
         accountRecordRepo.save(model);
 
         dto.setId(model.getId());
@@ -93,22 +109,29 @@ public class AccountRecordService {
         return dto;
     }
 
+    public void delete(Long id) {
+        Preconditions.checkNotNull(id, "no record id was provided.");
+        //TODO 权限校验
+        accountRecordRepo.deleteById(id);
+    }
+
     private void validDto(AccountRecordDTO dto) {
         Preconditions.checkNotNull(dto, "dto should provided.");
         Preconditions.checkArgument(dto.getAccountId() > 0, "accountId should be greater than 0");
         Preconditions.checkArgument(dto.getTransactionId() > 0, "transactionId should be greater than 0");
 
-        AccountModel accountModel = walletRepo.getOne(dto.getAccountId());
+        Optional<AccountModel> accountModel = walletRepo.findById(dto.getAccountId());
 
-        if(accountModel == null) {
+        if (!accountModel.isPresent()){
             throw new IllegalArgumentException("no account found");
         }
 
-        TransactionModel transactionModel = transactionRepo.getOne(dto.getTransactionId());
+        Optional<TransactionModel> optionalModel = transactionRepo.findById(dto.getTransactionId());
 
-        if(transactionModel == null) {
+        if (!optionalModel.isPresent()){
             throw new IllegalArgumentException("no transaction found");
         }
+        TransactionModel transactionModel = optionalModel.get();
 
         if(transactionModel.getStatus() == TransactionStatus.COMMIT.getValue()) {
             throw new IllegalArgumentException(" transaction " + transactionModel.getId() + " has already committed.");

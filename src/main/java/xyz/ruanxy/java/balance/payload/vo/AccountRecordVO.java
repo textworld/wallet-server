@@ -15,9 +15,10 @@ public class AccountRecordVO {
         this.id = id;
     }
 
-    public AccountRecordVO(long id, long accountId) {
+    public AccountRecordVO(long id, long accountId, String accountName) {
         this.id = id;
         this.accountId = accountId;
+        this.accountName = accountName;
     }
 
     public AccountRecordVO(long id, long accountId, long transactionId, double money, String accountName,

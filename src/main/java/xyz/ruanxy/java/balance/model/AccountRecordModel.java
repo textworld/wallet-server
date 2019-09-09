@@ -14,13 +14,12 @@ import xyz.ruanxy.java.balance.model.audit.GmtAudit;
 
 @Entity
 @Table(name = "T_account_record", uniqueConstraints = {
-    @UniqueConstraint(columnNames = "transaction_id"),
-    @UniqueConstraint(columnNames = "account_id")
+    @UniqueConstraint(columnNames = {"transaction_id", "account_id"})
 })
 public class AccountRecordModel extends GmtAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "transaction_id")
@@ -32,11 +31,11 @@ public class AccountRecordModel extends GmtAudit {
     private double money;
     private LocalDateTime gmtTransaction;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -5,32 +5,32 @@ import xyz.ruanxy.java.balance.model.AccountRecordModel;
 import xyz.ruanxy.java.balance.util.CustomBeanUtils;
 
 public class AccountRecordDTO {
-    private long id;
-    private long transactionId;
-    private long accountId;
+    private Long id;
+    private Long transactionId;
+    private Long accountId;
     private double money;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public long getTransactionId() {
+    public Long getTransactionId() {
         return transactionId;
     }
 
-    public void setTransactionId(long transactionId) {
+    public void setTransactionId(Long transactionId) {
         this.transactionId = transactionId;
     }
 
-    public long getAccountId() {
+    public Long getAccountId() {
         return accountId;
     }
 
-    public void setAccountId(long accountId) {
+    public void setAccountId(Long accountId) {
         this.accountId = accountId;
     }
 

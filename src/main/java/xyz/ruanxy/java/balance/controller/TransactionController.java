@@ -14,6 +14,7 @@ import xyz.ruanxy.java.balance.payload.ResultBean;
 import xyz.ruanxy.java.balance.payload.ResultListBean;
 import xyz.ruanxy.java.balance.payload.TransactionDTO;
 import xyz.ruanxy.java.balance.payload.vo.AccountRecordVO;
+import xyz.ruanxy.java.balance.payload.vo.TransactionVO;
 import xyz.ruanxy.java.balance.service.TransactionService;
 
 @RestController
@@ -35,7 +36,7 @@ public class TransactionController {
     }
 
     @GetMapping(value = "/{id:\\d+}/unRecordAccounts")
-    public ResultListBean<AccountDTO> getUnRecordAccounts(
+    public ResultListBean<Map<String, Object>> getUnRecordAccounts(
         @PathVariable(name = "id") long id
     ){
         return ResultListBean.success(transactionService.getUnRecordAccounts(id
@@ -47,5 +48,12 @@ public class TransactionController {
         @PathVariable(name = "id") long id
     ) {
         return ResultListBean.success(transactionService.getAccountRecord(id));
+    }
+
+    @GetMapping(value = "/{id:\\d+}/cal")
+    public ResultListBean<TransactionVO> cal(
+        @PathVariable(name = "id") long id
+    ){
+        return ResultListBean.success(transactionService.cal(id));
     }
 }

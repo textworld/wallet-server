@@ -1,6 +1,7 @@
 package xyz.ruanxy.java.balance.service;
 
 import com.google.common.base.Preconditions;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -17,6 +18,7 @@ import xyz.ruanxy.java.balance.model.typeeunm.TransactionStatus;
 import xyz.ruanxy.java.balance.payload.AccountDTO;
 import xyz.ruanxy.java.balance.payload.TransactionDTO;
 import xyz.ruanxy.java.balance.payload.vo.AccountRecordVO;
+import xyz.ruanxy.java.balance.payload.vo.TransactionVO;
 import xyz.ruanxy.java.balance.repository.TransactionRepository;
 import xyz.ruanxy.java.balance.repository.WalletRepository;
 import xyz.ruanxy.java.balance.util.CustomBeanUtils;
@@ -27,7 +29,7 @@ public class TransactionService {
 
     @Autowired
     private TransactionRepository repository;
-
+    @Autowired
     private WalletRepository walletRepository;
 
     public List<TransactionDTO> getAll(){
@@ -63,10 +65,17 @@ public class TransactionService {
         return dto;
     }
 
-    public List<AccountDTO> getUnRecordAccounts(long transactionId) {
+    public List<Map<String, Object>> getUnRecordAccounts(long transactionId) {
         getTransactionModel(transactionId);
-        List<AccountModel> accountModels = walletRepository.findUnRecordAccount(transactionId);
-        return AccountDTO.build(accountModels);
+        List<Map<String, Object>> accountModels = walletRepository.findUnRecordAccount(transactionId);
+
+//        List<AccountModel> models = new ArrayList<>(accountModels.size());
+//        for(Map<String, Object> m : accountModels) {
+//            AccountModel model = new AccountModel();
+//            CustomBeanUtils.copyNotNullProperties(m, model);
+//            models.add(model);
+//        }
+        return accountModels;
     }
 
 //    public List<AccountRecordVO> getAccountRecord(long transactionId) {
@@ -76,7 +85,7 @@ public class TransactionService {
 //    }
     public List<Map<String, Object>> getAccountRecord(long transactionId) {
         TransactionModel transactionModel = getTransactionModel(transactionId);
-        return repository.findAccountRecordVo(transactionId);
+        return repository.findAlAccountRecord(transactionId);
         //return null;
     }
 
@@ -88,5 +97,12 @@ public class TransactionService {
         }
 
         return transactionModel;
+    }
+
+//    public Map<String, Object> cal(long transactionId) {
+//
+//    }
+    public List<TransactionVO> cal(long transactionId) {
+        return repository.calculate(transactionId);
     }
 }
